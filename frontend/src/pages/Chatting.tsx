@@ -75,7 +75,7 @@ export const Chatting = () => {
 
   return (
     <div className="bg-gradient-to-r from-fuchsia-500 to-cyan-500 h-screen flex justify-center items-center">
-      <div className="bg-gradient-to-r from-slate-900 to-slate-700 h-96 w-96 rounded-md flex flex-col justify-between p-4">
+      <div className="bg-gradient-to-r from-slate-900 to-slate-700 h-[550px] w-[500px] rounded-md flex flex-col justify-between p-4">
         {/* Messages Section */}
         <div className="flex-grow overflow-y-auto scrollbar-hide"  style={{
             scrollbarWidth: "none", // For Firefox
@@ -84,7 +84,7 @@ export const Chatting = () => {
           {messages.map((msg, index) => (
             <div
             key={index}
-            className={`p-2 mb-4 rounded-md text-sm font-md shadow-lg transition duration-300  min-w-36 ${
+            className={`p-2 mb-4 rounded-md text-lg font-md shadow-lg transition duration-300  min-w-36 ${
               msg.sender === "you"
                 ? "bg-green-600 text-white self-end ml-48" // Your message styling
                 : "bg-yellow-500 text-black self-start mr-48" // Incoming message styling
