@@ -2,6 +2,7 @@
 interface Inputprops{
     text : string,
     refe? : string, 
+    ky? : any,
 
 
 }
@@ -9,7 +10,7 @@ const inputStyle = "text-black-700 border font-semibold rounded-xl border-4 max-
 
  
 export const Input = (props : Inputprops)=>{
-    return <input ref = {props.refe} className={inputStyle} placeholder={props.text}></input>
+    return <input ref = {props.refe} className={inputStyle} placeholder={props.text} onKeyDown={props.ky}></input>
 
 
 }

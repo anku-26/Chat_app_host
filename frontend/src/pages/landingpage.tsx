@@ -36,14 +36,21 @@ export const LandingPage = () => {
     console.log("Room joined. Navigating to /chat.");
     navigate("/chat");
   };
+const gog = (event :  React.KeyboardEvent<HTMLInputElement>)=>{
+  if(event.key ==="Enter"){
+          event.preventDefault();
+          back()
+  }
 
+
+}
   return (
     <div className="bg-slate-500 flex items-center justify-center h-screen w-screen">
       <div className="flex flex-col gap-4 border p-12 rounded-xl bg-black">
         
         <Input text="Enter room ID"  
          //@ts-ignore
-        refe={inputRef}></Input>
+        refe={inputRef}  ky={gog}></Input>
         <Button text="Join Room" onclick={back}></Button>
         <Button onclick={random} text="Generate RoomId"></Button>
         {id && <div className="bg-blue-500">Your room ID is: {id}</div>}
@@ -51,3 +58,6 @@ export const LandingPage = () => {
     </div>
   );
 };
+
+
+
