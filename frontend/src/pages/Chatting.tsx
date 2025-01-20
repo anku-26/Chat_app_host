@@ -8,6 +8,7 @@ export const Chatting = () => {
   const [messages, setMessages] = useState<{ sender: string; text: string }[]>([
     { sender: "server", text: "Hello from server!" },
   ]);
+  const [isTabActive, setIsTabActive] = useState(true)
   // Scroll to the bottom whenever a new message is added
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -18,24 +19,63 @@ export const Chatting = () => {
   }, [messages]);
 
   useEffect(() => {
-    if (!ws) return;
+    const handleVisibilityChange = () => {
+      setIsTabActive(!document.hidden);
+    };
 
-    // Listen to messages from the server
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, []);
+
+
+  useEffect(() => {
+    if (!ws) return;
+  
+    const ringtone = new Audio("/ringtone.wav");
+  
+    // Handle audio playback safely by checking user interaction
+    const playRingtone = () => {
+      if (typeof ringtone.play === "function") {
+        ringtone.play().catch((err) => {
+          console.warn("Audio playback blocked:", err);
+        });
+      }
+    };
+  
+    // Handle incoming messages
     ws.onmessage = (event) => {
       try {
-        const data = JSON.parse(event.data); // Parse incoming JSON
+        const data = JSON.parse(event.data);
         if (data.type === "chat" && data.payload?.message) {
-          setMessages((prev) => [...prev,   { sender: "server", text: data.payload.message }]);
+          setMessages((prev) => [
+            ...prev,
+            { sender: "server", text: data.payload.message },
+          ]);
+  
+          if (!isTabActive) {
+            // Show browser notification
+            if (Notification.permission === "granted") {
+              new Notification("New Message", {
+                body: data.payload.message,
+              });
+              playRingtone();
+            } else if (Notification.permission === "default") {
+              Notification.requestPermission();
+            }
+          }
         }
       } catch (err) {
         console.error("Error parsing WebSocket message:", err);
       }
     };
-
+  
     return () => {
       console.log("Leaving Chatting page.");
     };
-  }, [ws]);
+  }, [ws, isTabActive]);
+  
 
   useEffect(() => {
     const clearMessagesInterval = setInterval(() => {
