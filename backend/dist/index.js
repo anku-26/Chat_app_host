@@ -7,13 +7,21 @@ const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const ws_1 = require("ws");
 const sockerarr = [];
-// console.log("PORT", process.env.PORT);
 //@ts-ignore
 const ws = new ws_1.WebSocketServer({ port: process.env.PORT | 8080 });
 ws.on("connection", (socket) => {
     console.log("connected");
+    console.log(sockerarr);
     socket.on("close", () => {
         console.log("Client disconnected");
+        for (let i = 0; i < sockerarr.length; i++) {
+            if (sockerarr[i].sockets === socket) {
+                console.log(`Removing client from room: ${sockerarr[i].roomId}`);
+                sockerarr.splice(i, 1); // Remove the client entry
+                break;
+            }
+        }
+        console.log('Total remaining clients: ' + sockerarr.length);
     });
     socket.on("message", (massage) => {
         const message = massage.toString();
